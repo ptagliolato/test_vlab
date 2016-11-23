@@ -1,3 +1,3 @@
-a<-function(s){
-  return (s)  
+a<-function(s1){
+  return (s1)  
 }
