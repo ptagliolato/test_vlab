@@ -1,7 +1,7 @@
 a<-function(s1){
   return (c(s1,": this is almost a test"))  
 }
-
+#
 tavReadDataportal<-function(dataUID,user,pass){
   require(curl)
   h <- new_handle()
@@ -14,7 +14,7 @@ tavReadDataportal<-function(dataUID,user,pass){
   )
   url<-sprintf("http://www.servicecentrelifewatch.eu/lifewatch-portlet/services/dataset/%s/download",dataUID)
   tmp<-tempfile(tmpdir=getwd())
-  req<-curl_download(url = url,sprintf("lw_%s",dataUID),handle=h)
+  req<-curl_download(url = url,sprintf("%s/lw_%s",getwd(),dataUID),handle=h)
   return(req)
 }
 
