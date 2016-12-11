@@ -1,9 +1,5 @@
 a<-function(s1){
-  return (c(s1,": this is a test"))  
-}
-
-tav.read.csv<-function(...){
-  return (read.csv(...))
+  return (c(s1,": this is almost a test"))  
 }
 
 tavReadDataportal<-function(dataUID,user,pass){
@@ -17,8 +13,8 @@ tavReadDataportal<-function(dataUID,user,pass){
                     "password"= pass
   )
   url<-sprintf("http://www.servicecentrelifewatch.eu/lifewatch-portlet/services/dataset/%s/download",dataUID)
-  tmp<-tempfile()
-  req<-curl_download(url = url,tmp,handle=h)
+  tmp<-tempfile(tmpdir=getwd())
+  req<-curl_download(url = url,sprintf("lw_%s",dataUID),handle=h)
   return(req)
 }
 
