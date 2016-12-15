@@ -1,10 +1,11 @@
 Package: vlab
 Type: Package
-Title: What the package does (short line)
+Title: Lifewatch opencpu tests for Vlab
 Version: 1.0
 Date: 2016-11-22
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
+Author: ptagliolato
+Maintainer: Paolo Tagliolato <tagliolato.p@irea.cnr.it>
 Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Imports: curl (>= 0.9.4)
+License: GPL 3
 RoxygenNote: 5.0.1
