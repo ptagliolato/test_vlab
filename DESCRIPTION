@@ -6,6 +6,14 @@ Date: 2016-11-22
 Author: ptagliolato
 Maintainer: Paolo Tagliolato <tagliolato.p@irea.cnr.it>
 Description: Lifewatch opencpu tests for Vlab
-Imports: curl (>= 0.9.4)
+Imports:
+  curl (>= 0.9.4),
+  reshape2
+Suggests:
+  lme4,
+  vegan,
+  visreg,
+  MuMIn,
+  FactoMineR
 License: GPL 3
 RoxygenNote: 5.0.1
