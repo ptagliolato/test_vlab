@@ -2,7 +2,7 @@
 #'
 #' @param s1 
 a<-function(s1){
-  return (c(s1,": this is almost a test!"))  
+  return (c(s1,": this is almost a test"))  
 }
 #
 
