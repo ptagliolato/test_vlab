@@ -89,12 +89,26 @@ alienNativeRichness<-function(aDatasetWith_eunishabitatstypename_alien_locality_
   
   # first load raw data, in this example we'll used the freshwater dataset from Boggero et al. (2016)
   ds<-aDatasetWith_eunishabitatstypename_alien_locality_eunisspeciesgroup_scientificname
+  #ds<-read.csv(file="../datasets/Dataset_Biodiversity_AlienSpecies_Freshwaters_2015.csv",sep=";")
   #Check needed columns
   neededFields<-c("eunishabitatstypename","alien","locality","eunisspeciesgroups","scientificname")
+  
   missingFields<-!neededFields %in% colnames(ds)
-  if(prod(missingFields)){
+  if(!prod(missingFields)){
     stop(paste('Input data need the following fields:',paste(neededFields[missingFields], collapse=", " )))
   }
+  #check this. I received the output Input data need the following fields: eunishabitatstypename, alien, locality, eunisspeciesgroups, scientificname
+  # for the following columns: [1] "catalognumber"            "eventdate"               
+  # [3] "waterbody"                "locality"                
+  # [5] "decimallatitude"          "decimallongitude"        
+  # [7] "scientificname"           "namepublishedinyear"     
+  # [9] "phylum"                   "class"                   
+  # [11] "scientificnameauthorship" "family"                  
+  # [13] "order"                    "genus"                   
+  # [15] "alien"                    "eunishabitatstypecode"   
+  # [17] "eunisspeciesgroups"       "providedscientificname"  
+  # [19] "providedscientificname.1"
+  # 
   
   #freshwater<-read.csv(file="Dataset_Biodiversity_AlienSpecies_Freshwaters_2015.csv",sep=";")
   
