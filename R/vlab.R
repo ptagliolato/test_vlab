@@ -166,6 +166,8 @@ alienNativeRichness<-function(aDatasetWith_eunishabitatstypename_alien_locality_
 #' @import MuMIn lme4
 #' 
 #' @export
+#'
+#' #@examples
 nn<-function(alienNativeRichnessData){
   #########################################################################################
   #####  Step 2: Generalized Linear Mixed Model (GLMM) fitting usign the lme4 package #####
