@@ -59,7 +59,7 @@ readLifeWatchDataportal<-function(dataUID,user,pass){
 #'      
 #'    "alien": (boolean) an alien species with respect to the observing context 
 #'    "locality": (string) a toponym where the observation occurred 
-#'    "eunisspeciesgroup": (string) species group according to eunis species list (cf. http://eunis.eea.europa.eu/species.jsp)
+#'    "eunisspeciesgroups": (string) species group according to eunis species list (cf. http://eunis.eea.europa.eu/species.jsp)
 #'    "scientificname": (string) scientific name of the observed species (to be clarified: which harmonization we should expect)
 #' 
 #'    
@@ -151,4 +151,47 @@ alienNativeRichness<-function(aDatasetWith_eunishabitatstypename_alien_locality_
   rm("native_richness")
   
   return(new_table)
+}
+
+#' Title
+#'
+#' @param alienNativeRichnessData a dataset accounting for alien and native species richness 
+#' with the following fields: 
+#'    "locality": (string) a toponym where the observation occurred 
+#'    "EunisL1": (string) eunis habitat level-1 code
+#'    "eunisspeciesgroups": (string) species group according to eunis species list (cf. http://eunis.eea.europa.eu/species.jsp)
+#'    "native_richness": (int) richness of native species in the locality for the eunisspeciesgroup
+#'    "alien_richness": (int) richness of alien species in the locality for the eunisspeciesgroup
+#' @note the parameter, for ocpu execution, should be the previous session id, in order for ocpu to retrieve the data computed by the preceding method
+#' @import MuMIn lme4
+#' 
+#' @export
+#'
+#' #@examples
+nn<-function(alienNativeRichnessData){
+  #########################################################################################
+  #####  Step 2: Generalized Linear Mixed Model (GLMM) fitting usign the lme4 package #####
+  #########################################################################################
+  new_table<-alienNativeRichnessData
+  
+  # now we are ready to fit our model. We will use a generalized linear mixed models in order to take into account the structure of our new dataset. 
+  #Taxonomic group and locality are not the focus of our investigation but largely influence our sampling. 
+  #We will include these two factor in the random effect. 
+  
+  # First fit full model (a negative bionomial family is assumed for richness data)
+  gfit_Eu_Ri <- glmer.nb(alien_richness ~native_richness+ EunisL1 +(1| eunisspeciesgroups)+(1|locality), data= new_table)
+  
+  # automatically calculate best model according to AIC
+  #library(MuMIn)
+  options(na.action = "na.fail")
+  ms1<-dredge(gfit_Eu_Ri)
+  ms1; # the full model has the highest AICc support 
+  
+  # fit the best model according to AIC
+  mod.fit<-glmer.nb(as.formula(getCall(ms1,1)), data = new_table)
+  
+  # results
+  summary(mod.fit) #table.
+  visreg(mod.fit,trans=exp,nn=101,alpha=1,rug=F,partial=T) #graph
+  
 }

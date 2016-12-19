@@ -19,7 +19,7 @@
      
    "alien": (boolean) an alien species with respect to the observing context 
    "locality": (string) a toponym where the observation occurred 
-   "eunisspeciesgroup": (string) species group according to eunis species list (cf. http://eunis.eea.europa.eu/species.jsp)
+   "eunisspeciesgroups": (string) species group according to eunis species list (cf. http://eunis.eea.europa.eu/species.jsp)
    "scientificname": (string) scientific name of the observed species (to be clarified: which harmonization we should expect)}
 \usage{
 
