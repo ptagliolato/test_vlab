@@ -91,6 +91,7 @@ alienNativeRichness<-function(aDatasetWith_eunishabitatstypename_alien_locality_
   ds<-aDatasetWith_eunishabitatstypename_alien_locality_eunisspeciesgroup_scientificname
   #Check needed columns
   neededFields<-c("eunishabitatstypename","alien","locality","eunisspeciesgroups","scientificname")
+  
   missingFields<-!neededFields %in% colnames(ds)
   if(prod(missingFields)){
     stop(paste('Input data need the following fields:',paste(neededFields[missingFields], collapse=", " )))
