@@ -82,13 +82,22 @@ alienNativeRichness<-function(aDatasetWith_eunishabitatstypename_alien_locality_
   ##################################
   ##### step 1: Matrix reshape #####
   ##################################
-  
+
   # we need to reshape the original matrix downloaded from Lifewatch data repository (as csv file). 
   # We want to investigate the site vulnerability, distributed across different Eunis habitat, to different taxonomic groups. 
   # So we need to aggregate the data at site level by taxon name and Habitat Eunis name
   
   # first load raw data, in this example we'll used the freshwater dataset from Boggero et al. (2016)
   ds<-aDatasetWith_eunishabitatstypename_alien_locality_eunisspeciesgroup_scientificname
+  #Check needed columns
+  ds<-freshwater
+
+  neededFields<-c("eunishabitatstypename1","alien","locality","eunisspeciesgroups","scientificname1")
+  missingFields<-!neededFields %in% colnames(ds)
+  if(prod(missingFields)){
+    stop(paste('Input data need the following fields:',paste(neededFields[missingFields], collapse=", " )))
+  }
+  
   #freshwater<-read.csv(file="Dataset_Biodiversity_AlienSpecies_Freshwaters_2015.csv",sep=";")
   
   # we are interested in investigating the Eunis habitat at level-1. We create a new variable.
@@ -173,6 +182,12 @@ nn<-function(alienNativeRichnessData){
   #####  Step 2: Generalized Linear Mixed Model (GLMM) fitting usign the lme4 package #####
   #########################################################################################
   new_table<-alienNativeRichnessData
+  
+  neededFields<-c("locality","EunisL1","eunisspeciesgroups","native_richness","alien_richness")
+  missingFields<-!neededFields %in% colnames(ds)
+  if(prod(missingFields)){
+    stop(paste('Input data need the following fields:',paste(neededFields[missingFields], collapse=", " )))
+  }
   
   # now we are ready to fit our model. We will use a generalized linear mixed models in order to take into account the structure of our new dataset. 
   #Taxonomic group and locality are not the focus of our investigation but largely influence our sampling. 
