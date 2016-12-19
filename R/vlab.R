@@ -90,9 +90,7 @@ alienNativeRichness<-function(aDatasetWith_eunishabitatstypename_alien_locality_
   # first load raw data, in this example we'll used the freshwater dataset from Boggero et al. (2016)
   ds<-aDatasetWith_eunishabitatstypename_alien_locality_eunisspeciesgroup_scientificname
   #Check needed columns
-  ds<-freshwater
-
-  neededFields<-c("eunishabitatstypename1","alien","locality","eunisspeciesgroups","scientificname1")
+  neededFields<-c("eunishabitatstypename","alien","locality","eunisspeciesgroups","scientificname")
   missingFields<-!neededFields %in% colnames(ds)
   if(prod(missingFields)){
     stop(paste('Input data need the following fields:',paste(neededFields[missingFields], collapse=", " )))
