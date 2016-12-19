@@ -19,7 +19,7 @@ a<-function(s1){
 #' @import curl
 #'
 #' @export
-#' @return first row of the downloaded dataset
+#' @return downloaded dataset
 readLifeWatchDataportal<-function(dataUID,user,pass){
   require(curl)
   h <- new_handle()
@@ -36,10 +36,12 @@ readLifeWatchDataportal<-function(dataUID,user,pass){
   # cf. https://github.com/jeroenooms/opencpu/issues/175 "Writing to a unique temporary directory": in openCPU use the getwd dir.
   req<-curl_download(url = url,sprintf("%s/lw_%s",getwd(),dataUID),handle=h)
   
-  # extract just the first row with colnames as an example
-  header <- read.table(req, nrows = 1, header = TRUE, sep =';', stringsAsFactors = FALSE)
-  
-  return(header)
+  ## extract just the first row with colnames as an example
+  # header <- read.table(req, nrows = 1, header = TRUE, sep =';', stringsAsFactors = FALSE)
+  # read and return file
+  file<-read.csv(req,sep=";")
+    #read.table(req, header = TRUE, sep =';', stringsAsFactors = FALSE)
+  return(file)
 }
 
 #' The function calculates alien and native species richness in a 
