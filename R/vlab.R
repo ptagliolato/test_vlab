@@ -94,7 +94,7 @@ alienNativeRichness<-function(aDatasetWith_eunishabitatstypename_alien_locality_
   neededFields<-c("eunishabitatstypename","alien","locality","eunisspeciesgroups","scientificname")
   
   missingFields<-!neededFields %in% colnames(ds)
-  if(prod(missingFields)){
+  if(sum(missingFields)){
     stop(paste('Input data need the following fields:',paste(neededFields[missingFields], collapse=", " )))
   }
   #check this. I received the output Input data need the following fields: eunishabitatstypename, alien, locality, eunisspeciesgroups, scientificname
