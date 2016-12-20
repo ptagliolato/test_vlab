@@ -85,7 +85,7 @@ alienNativeRichness<-function(aDatasetWith_eunishabitatstypename_alien_locality_
 
   # we need to reshape the original matrix downloaded from Lifewatch data repository (as csv file). 
   # We want to investigate the site vulnerability, distributed across different Eunis habitat, to different taxonomic groups. 
-  # So we need to aggregate the data at site level by taxon name and Habitat Eunis name
+  # So we need to aggregate the data at site level by taxon name and Habitat Eunis name 
   
   # first load raw data, in this example we'll used the freshwater dataset from Boggero et al. (2016)
   ds<-aDatasetWith_eunishabitatstypename_alien_locality_eunisspeciesgroup_scientificname
