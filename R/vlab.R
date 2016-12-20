@@ -61,12 +61,14 @@ readLifeWatchDataportal<-function(dataUID,user,pass){
 #'      
 #'    "alien": (boolean) an alien species with respect to the observing context 
 #'    "locality": (string) a toponym where the observation occurred 
-#'    "eunisspeciesgroups": (string) species group according to eunis species list (cf. http://eunis.eea.europa.eu/species.jsp)
+#'    [DEPRECATED] "eunisspeciesgroups": (string) species group according to eunis species list (cf. http://eunis.eea.europa.eu/species.jsp)
+#'    "family": (string) family name according to LifeWatch Global Name Architecture - cf.(for auth users) http://www.servicecentrelifewatch.eu/global-names-architecture.
 #'    "scientificname": (string) scientific name of the observed species (to be clarified: which harmonization we should expect)
 #' 
 #'    
 #' It results in a new dataset accounting for alien and native species richness, grouping the original data
-#' by locality, eunis habitat level-1 code, eunis species group.
+#' by locality, eunis habitat level-1 code, family 
+#' [deprecated] eunis species group.
 #'
 #' NOTE: We want to investigate the site vulnerability, distributed across different Eunis habitat, to different taxonomic groups. 
 #' So we need to aggregate the data at site level by taxon name and Habita Eunis name
@@ -91,24 +93,8 @@ alienNativeRichness<-function(aDatasetWith_eunishabitatstypename_alien_locality_
   ds<-aDatasetWith_eunishabitatstypename_alien_locality_eunisspeciesgroup_scientificname
   #ds<-read.csv(file="../datasets/Dataset_Biodiversity_AlienSpecies_Freshwaters_2015.csv",sep=";")
   #Check needed columns
-  neededFields<-c("eunishabitatstypename","alien","locality","eunisspeciesgroups","scientificname")
   
-  missingFields<-!neededFields %in% colnames(ds)
-  if(sum(missingFields)){
-    stop(paste('Input data need the following fields:',paste(neededFields[missingFields], collapse=", " )))
-  }
-  #check this. I received the output Input data need the following fields: eunishabitatstypename, alien, locality, eunisspeciesgroups, scientificname
-  # for the following columns: [1] "catalognumber"            "eventdate"               
-  # [3] "waterbody"                "locality"                
-  # [5] "decimallatitude"          "decimallongitude"        
-  # [7] "scientificname"           "namepublishedinyear"     
-  # [9] "phylum"                   "class"                   
-  # [11] "scientificnameauthorship" "family"                  
-  # [13] "order"                    "genus"                   
-  # [15] "alien"                    "eunishabitatstypecode"   
-  # [17] "eunisspeciesgroups"       "providedscientificname"  
-  # [19] "providedscientificname.1"
-  # 
+  checkFields(c("eunishabitatstypename","alien","locality","family","scientificname"),ds)
   
   #freshwater<-read.csv(file="Dataset_Biodiversity_AlienSpecies_Freshwaters_2015.csv",sep=";")
   
@@ -149,11 +135,11 @@ alienNativeRichness<-function(aDatasetWith_eunishabitatstypename_alien_locality_
   alien.melt<-melt(alien)
   # dcast: long->wide format of the dataset.
   # The table will be with the following columns: 
-  # locality, EunisL1 (i.e. eunis habitat code of first level), eunisspeciesgroups, [so many columns as the scientific names in the original scientificname column]
-  alien_table<-dcast(alien.melt,locality+ EunisL1 + eunisspeciesgroups ~ scientificname)
+  # locality, EunisL1 (i.e. eunis habitat code of first level), family, [so many columns as the scientific names in the original scientificname column]
+  alien_table<-dcast(alien.melt,locality+ EunisL1 + family ~ scientificname)
   
   # maybe we can bypass the melting step (?)
-  #alien_table2<-dcast(alien,locality+ EunisL1 + eunisspeciesgroups ~ scientificname)
+  #alien_table2<-dcast(alien,locality+ EunisL1 + family ~ scientificname)
   
   
   alien_table[is.na(alien_table)]<-0
@@ -161,7 +147,7 @@ alienNativeRichness<-function(aDatasetWith_eunishabitatstypename_alien_locality_
   alien_richness<-cbind(alien_table[sapply(alien_table, class)=="factor"],alien_richness)
   ## reshape native and calculate the native richness 
   native.melt<-melt(native)
-  native_table<-dcast(native.melt, locality+ EunisL1 + eunisspeciesgroups ~ scientificname)
+  native_table<-dcast(native.melt, locality+ EunisL1 + family ~ scientificname)
   native_table[is.na(native_table)]<-0
   native_richness<-specnumber(native_table[sapply(native_table, class)!="factor"])
   native_richness<-cbind(native_table[sapply(native_table, class)=="factor"],native_richness)
@@ -182,9 +168,10 @@ alienNativeRichness<-function(aDatasetWith_eunishabitatstypename_alien_locality_
 #' with the following fields: 
 #'    "locality": (string) a toponym where the observation occurred 
 #'    "EunisL1": (string) eunis habitat level-1 code
-#'    "eunisspeciesgroups": (string) species group according to eunis species list (cf. http://eunis.eea.europa.eu/species.jsp)
+#'    "family": (string) family name according to LifeWatch Global Name Architecture - cf.(for auth users) http://www.servicecentrelifewatch.eu/global-names-architecture.
 #'    "native_richness": (int) richness of native species in the locality for the eunisspeciesgroup
 #'    "alien_richness": (int) richness of alien species in the locality for the eunisspeciesgroup
+#'    [DEPRECATED]"eunispeciesgroups": (string) species group according to eunis species list (cf. http://eunis.eea.europa.eu/species.jsp)
 #' @note the parameter, for ocpu execution, should be the previous session id, in order for ocpu to retrieve the data computed by the preceding method
 #' @import MuMIn lme4
 #' 
@@ -195,18 +182,14 @@ nn<-function(alienNativeRichnessData){
   #########################################################################################
   new_table<-alienNativeRichnessData
   
-  neededFields<-c("locality","EunisL1","eunisspeciesgroups","native_richness","alien_richness")
-  missingFields<-!neededFields %in% colnames(ds)
-  if(prod(missingFields)){
-    stop(paste('Input data need the following fields:',paste(neededFields[missingFields], collapse=", " )))
-  }
+  checkFields(c("locality","EunisL1","family","native_richness","alien_richness"),new_table)
   
   # now we are ready to fit our model. We will use a generalized linear mixed models in order to take into account the structure of our new dataset. 
   #Taxonomic group and locality are not the focus of our investigation but largely influence our sampling. 
   #We will include these two factor in the random effect. 
   
   # First fit full model (a negative bionomial family is assumed for richness data)
-  gfit_Eu_Ri <- glmer.nb(alien_richness ~native_richness+ EunisL1 +(1| eunisspeciesgroups)+(1|locality), data= new_table)
+  gfit_Eu_Ri <- glmer.nb(alien_richness ~native_richness+ EunisL1 +(1| family)+(1|locality), data= new_table)
   
   # automatically calculate best model according to AIC
   #library(MuMIn)
