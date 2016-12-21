@@ -177,7 +177,7 @@ alienNativeRichness<-function(aDatasetWith_eunishabitatstypename_alien_locality_
 #' @note the parameter, for ocpu execution, should be the previous session id, in order for ocpu to retrieve the data computed by the preceding method
 #' 
 #' @importFrom MuMIn dredge
-#' @importFrom lme4 glmer.nb
+#' @import lme4
 #' @importFrom stats getCall
 #' @importFrom visreg visreg
 #' 
