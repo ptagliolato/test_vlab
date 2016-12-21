@@ -74,7 +74,9 @@ readLifeWatchDataportal<-function(dataUID,user,pass){
 #' So we need to aggregate the data at site level by taxon name and Habita Eunis name
 #' 
 #' @author Paolo Colangelo (original script author), Paolo Tagliolato (engineering)
-#' @import reshape2 vegan
+#' 
+#' @importFrom vegan specnumber
+#' @importFrom reshape2 dcast melt
 #' 
 #' @export
 #' @return dataframe accounting for alien and native species richness. 
@@ -132,24 +134,24 @@ alienNativeRichness<-function(aDatasetWith_eunishabitatstypename_alien_locality_
   #
   # Note: without other args, the melt function treats each column with numeric values as a variable column. 
   #   All the others are considered id columns (and the function groups by them)
-  alien.melt<-melt(alien)
+  alien.melt<-reshape2::melt(alien)
   # dcast: long->wide format of the dataset.
   # The table will be with the following columns: 
   # locality, EunisL1 (i.e. eunis habitat code of first level), family, [so many columns as the scientific names in the original scientificname column]
-  alien_table<-dcast(alien.melt,locality+ EunisL1 + family ~ scientificname)
+  alien_table<-reshape2::dcast(alien.melt,locality+ EunisL1 + family ~ scientificname)
   
   # maybe we can bypass the melting step (?)
   #alien_table2<-dcast(alien,locality+ EunisL1 + family ~ scientificname)
   
   
   alien_table[is.na(alien_table)]<-0
-  alien_richness<-specnumber(alien_table[sapply(alien_table, class)!="factor"])
+  alien_richness<-vegan::specnumber(alien_table[sapply(alien_table, class)!="factor"])
   alien_richness<-cbind(alien_table[sapply(alien_table, class)=="factor"],alien_richness)
   ## reshape native and calculate the native richness 
-  native.melt<-melt(native)
-  native_table<-dcast(native.melt, locality+ EunisL1 + family ~ scientificname)
+  native.melt<-reshape2::melt(native)
+  native_table<-reshape2::dcast(native.melt, locality+ EunisL1 + family ~ scientificname)
   native_table[is.na(native_table)]<-0
-  native_richness<-specnumber(native_table[sapply(native_table, class)!="factor"])
+  native_richness<-vegan::specnumber(native_table[sapply(native_table, class)!="factor"])
   native_richness<-cbind(native_table[sapply(native_table, class)=="factor"],native_richness)
   ##merge native+aliene
   new_table<-merge(native_richness,alien_richness,all.x=T,all.y=T)
@@ -173,10 +175,14 @@ alienNativeRichness<-function(aDatasetWith_eunishabitatstypename_alien_locality_
 #'    "alien_richness": (int) richness of alien species in the locality for the eunisspeciesgroup
 #'    [DEPRECATED]"eunispeciesgroups": (string) species group according to eunis species list (cf. http://eunis.eea.europa.eu/species.jsp)
 #' @note the parameter, for ocpu execution, should be the previous session id, in order for ocpu to retrieve the data computed by the preceding method
-#' @import MuMIn lme4
+#' 
+#' @importFrom MuMIn dredge
+#' @importFrom lme4 glmer.nb
+#' @importFrom stats getCall
+#' @importFrom visreg visreg
 #' 
 #' @export
-nn<-function(alienNativeRichnessData){
+nn<-function(alienNativeRichnessData){ #alienSpeciesOccurrenceProbability_byGLMM
   #########################################################################################
   #####  Step 2: Generalized Linear Mixed Model (GLMM) fitting usign the lme4 package #####
   #########################################################################################
@@ -189,19 +195,21 @@ nn<-function(alienNativeRichnessData){
   #We will include these two factor in the random effect. 
   
   # First fit full model (a negative bionomial family is assumed for richness data)
-  gfit_Eu_Ri <- glmer.nb(alien_richness ~native_richness+ EunisL1 +(1| family)+(1|locality), data= new_table)
+  gfit_Eu_Ri <- lme4::glmer.nb(alien_richness ~native_richness+ EunisL1 +(1| family)+(1|locality), data= new_table)
   
   # automatically calculate best model according to AIC
   #library(MuMIn)
   options(na.action = "na.fail")
-  ms1<-dredge(gfit_Eu_Ri)
+  ms1<-MuMIn::dredge(gfit_Eu_Ri)
   ms1; # the full model has the highest AICc support 
   
   # fit the best model according to AIC
-  mod.fit<-glmer.nb(as.formula(getCall(ms1,1)), data = new_table)
+  mod.fit<-lme4::glmer.nb(as.formula(stats::getCall(ms1,1)), data = new_table)
   
   # results
-  summary(mod.fit) #table.
-  visreg(mod.fit,trans=exp,nn=101,alpha=1,rug=F,partial=T) #graph
+  table<-summary(mod.fit) #table.
+  par(mfrow=c(2,2))
+  visreg::visreg(mod.fit,trans=exp,nn=101,alpha=1,rug=F,partial=T, ylab='Alien Species occurrence probability') #graph (visualize regression function) #this statement should plot in the "graphics" env (made available by ocpu)
   
+  return(table) #check if it is useful
 }
