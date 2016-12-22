@@ -213,3 +213,4 @@ nn<-function(alienNativeRichnessData){ #alienSpeciesOccurrenceProbability_byGLMM
   
   return(table) #check if it is useful
 }
+

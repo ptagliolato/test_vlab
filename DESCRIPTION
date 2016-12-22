@@ -10,10 +10,10 @@ Imports:
   curl (>= 0.9.4),
   reshape2 (>= 1.4.1),
   lme4,
-  MuMIn
-Suggests:
-  vegan,
+  MuMIn,
   visreg,
+  vegan
+Suggests:
   FactoMineR
 License: GPL 3
 RoxygenNote: 5.0.1
