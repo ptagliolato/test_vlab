@@ -9,11 +9,11 @@ Description: Lifewatch opencpu tests for Vlab
 Imports:
   curl (>= 0.9.4),
   reshape2 (>= 1.4.1),
-  lme4,
-  MuMIn
-Suggests:
-  vegan,
+  lme4 (>= 1.1-12),
+  MuMIn,
   visreg,
+  vegan
+Suggests:
   FactoMineR
 License: GPL 3
 RoxygenNote: 5.0.1

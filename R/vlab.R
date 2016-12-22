@@ -186,6 +186,9 @@ nn<-function(alienNativeRichnessData){ #alienSpeciesOccurrenceProbability_byGLMM
   #########################################################################################
   #####  Step 2: Generalized Linear Mixed Model (GLMM) fitting usign the lme4 package #####
   #########################################################################################
+  message("I m here")
+  library(lme4)
+  
   new_table<-alienNativeRichnessData
   
   checkFields(c("locality","EunisL1","family","native_richness","alien_richness"),new_table)
@@ -195,21 +198,24 @@ nn<-function(alienNativeRichnessData){ #alienSpeciesOccurrenceProbability_byGLMM
   #We will include these two factor in the random effect. 
   
   # First fit full model (a negative bionomial family is assumed for richness data)
-  gfit_Eu_Ri <- lme4::glmer.nb(alien_richness ~native_richness+ EunisL1 +(1| family)+(1|locality), data= new_table)
+  message("I m here before ")
+  gfit_Eu_Ri <- try(lme4::glmer.nb(alien_richness ~native_richness+ EunisL1 +(1| family)+(1|locality), data= new_table))
   
   # automatically calculate best model according to AIC
   #library(MuMIn)
   options(na.action = "na.fail")
-  ms1<-MuMIn::dredge(gfit_Eu_Ri)
+  ms1<-try(MuMIn::dredge(gfit_Eu_Ri))
   ms1; # the full model has the highest AICc support 
   
   # fit the best model according to AIC
-  mod.fit<-lme4::glmer.nb(as.formula(stats::getCall(ms1,1)), data = new_table)
+  mod.fit<-try(lme4::glmer.nb(as.formula(stats::getCall(ms1,1)), data = new_table))
   
   # results
   table<-summary(mod.fit) #table.
   par(mfrow=c(2,2))
   visreg::visreg(mod.fit,trans=exp,nn=101,alpha=1,rug=F,partial=T, ylab='Alien Species occurrence probability') #graph (visualize regression function) #this statement should plot in the "graphics" env (made available by ocpu)
   
+  
   return(table) #check if it is useful
 }
+

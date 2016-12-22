@@ -13,3 +13,10 @@ checkFields<-function(neededFields,df){
     stop(paste('Input data need the following fields:',paste(neededFields[missingFields], collapse=", " )))
   }
 }
+
+#' @import lme4
+#' 
+#' @export
+testGlmer<-function(){
+  print(glmer)
+}
