@@ -11,9 +11,10 @@ nn(alienNativeRichnessData)
 with the following fields: 
    "locality": (string) a toponym where the observation occurred 
    "EunisL1": (string) eunis habitat level-1 code
-   "eunisspeciesgroups": (string) species group according to eunis species list (cf. http://eunis.eea.europa.eu/species.jsp)
+   "family": (string) family name according to LifeWatch Global Name Architecture - cf.(for auth users) http://www.servicecentrelifewatch.eu/global-names-architecture.
    "native_richness": (int) richness of native species in the locality for the eunisspeciesgroup
-   "alien_richness": (int) richness of alien species in the locality for the eunisspeciesgroup}
+   "alien_richness": (int) richness of alien species in the locality for the eunisspeciesgroup
+   [DEPRECATED]"eunispeciesgroups": (string) species group according to eunis species list (cf. http://eunis.eea.europa.eu/species.jsp)}
 }
 \description{
 Title

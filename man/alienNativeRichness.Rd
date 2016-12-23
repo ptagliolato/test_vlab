@@ -19,7 +19,8 @@
      
    "alien": (boolean) an alien species with respect to the observing context 
    "locality": (string) a toponym where the observation occurred 
-   "eunisspeciesgroups": (string) species group according to eunis species list (cf. http://eunis.eea.europa.eu/species.jsp)
+   [DEPRECATED] "eunisspeciesgroups": (string) species group according to eunis species list (cf. http://eunis.eea.europa.eu/species.jsp)
+   "family": (string) family name according to LifeWatch Global Name Architecture - cf.(for auth users) http://www.servicecentrelifewatch.eu/global-names-architecture.
    "scientificname": (string) scientific name of the observed species (to be clarified: which harmonization we should expect)}
 \usage{
 
@@ -32,7 +33,8 @@ original data are grouped by locality, eunis habitat level-1 code, eunis species
 }
 \description{
 It results in a new dataset accounting for alien and native species richness, grouping the original data
-by locality, eunis habitat level-1 code, eunis species group.
+by locality, eunis habitat level-1 code, family 
+[deprecated] eunis species group.
 }
 \details{
 NOTE: We want to investigate the site vulnerability, distributed across different Eunis habitat, to different taxonomic groups. 

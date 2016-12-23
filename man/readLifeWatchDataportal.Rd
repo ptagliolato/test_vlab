@@ -14,7 +14,7 @@ readLifeWatchDataportal(dataUID, user, pass)
 \item{pass}{password (LW dataportal account)}
 }
 \value{
-first row of the downloaded dataset
+downloaded dataset
 }
 \description{
 \code{readLifeWatchDataportal} The method returns the first row of the downloaded dataset
