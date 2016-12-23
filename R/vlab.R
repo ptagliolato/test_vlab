@@ -210,7 +210,7 @@ nn<-function(alienNativeRichnessData){ #alienSpeciesOccurrenceProbability_byGLMM
   # fit the best model according to AIC
   mod.fit<-try(lme4::glmer.nb(as.formula(stats::getCall(ms1,1)), data = new_table))
   
-  # results
+  # results 
   table<-summary(mod.fit) #table.
   par(mfrow=c(2,2))
   visreg::visreg(mod.fit,trans=exp,nn=101,alpha=1,rug=F,partial=T, ylab='Alien Species occurrence probability') #graph (visualize regression function) #this statement should plot in the "graphics" env (made available by ocpu)
